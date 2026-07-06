@@ -1,0 +1,250 @@
+# VisionUpscale ESRGAN Training Configuration
+# ---------------------------------------------------
+# Configuration for training the ESRGAN model for 4× super-resolution
+
+# =========== Model Configuration ===========
+model:
+  # Generator Configuration
+  generator:
+    channels: 64
+    num_rrdb: 23
+    num_dense_connections: 5
+    beta_scale: 0.2
+    upscale_factor: 4
+    use_pixel_shuffle: true
+    residual_scaling: false
+    
+  # Discriminator Configuration  
+  discriminator:
+    channels: 64
+    num_layers: 8
+    use_spectral_norm: true
+    leaky_relu_slope: 0.2
+    use_global_average_pool: true
+
+# =========== Training Configuration ===========
+training:
+  # Two-phase training strategy
+  phases:
+    phase1:
+      name: "PSNR Pre-training"
+      epochs: 200
+      loss: "L1"
+      learning_rate: 0.0002
+      batch_size: 32
+      
+    phase2:
+      name: "GAN Training"
+      epochs: 200
+      loss: "total"  # L1 + Perceptual + Adversarial
+      learning_rate: 0.0001
+      batch_size: 16
+  
+  # Optimizer Settings
+  optimizer:
+    name: "Adam"
+    betas: [0.9, 0.999]
+    weight_decay: 0.0
+  
+  # Loss Function Weights
+  loss_weights:
+    pixel_loss: 10.0
+    perceptual_loss: 0.5
+    adversarial_loss: 1.0
+    feature_loss: 0.0
+    
+  # Training Settings
+  num_workers: 8
+  pin_memory: true
+  prefetch_factor: 2
+  mixed_precision: true
+  gradient_accumulation_steps: 1
+  clip_grad_norm: 10.0
+  
+  # Checkpointing
+  save_checkpoint_every: 10
+  save_best_only: true
+  checkpoint_metric: "psnr"
+  checkpoint_dir: "./checkpoints"
+  
+  # Logging
+  log_dir: "./logs"
+  tensorboard: true
+  wandb: false  # Set to true to enable Weights & Biases
+  
+# =========== Dataset Configuration ===========
+dataset:
+  name: "DIV2K"
+  root_dir: "./data/div2k"
+  
+  # High-Res Images
+  hr_size: 512  # Random crop size
+  
+  # Low-Res Images (automatically generated)
+  scale_factor: 4
+  interpolation: "bicubic"
+  
+  # Training/Validation Split
+  train_split: 0.95  # 95% for training
+  val_split: 0.05    # 5% for validation
+  
+  # Augmentation
+  augmentation:
+    random_crop: true
+    random_horizontal_flip: true
+    random_vertical_flip: false
+    random_rotation: true
+    rotation_degrees: 90
+    color_jitter: false
+    
+  # Data Loading
+  batch_size:
+    train: 32
+    val: 8
+    test: 1
+  
+# =========== Hardware Configuration ===========
+hardware:
+  # GPU Settings
+  num_gpus: 1
+  gpu_ids: [0]
+  
+  # CUDA Settings
+  cudnn_benchmark: true
+  cudnn_deterministic: false
+  
+  # Memory Settings
+  max_memory_allocated: 0.9  # 90% of GPU memory
+  
+# =========== Evaluation Configuration ===========
+evaluation:
+  metrics:
+    - "psnr"
+    - "ssim"
+    - "lpips"
+    
+  datasets:
+    - name: "Set5"
+      path: "./data/benchmark/set5"
+    - name: "Set14"
+      path: "./data/benchmark/set14"
+    - name: "Urban100"
+      path: "./data/benchmark/urban100"
+    - name: "BSD100"
+      path: "./data/benchmark/bsd100"
+      
+  # Inference Settings
+  save_results: true
+  results_dir: "./results"
+  save_comparison: true
+  save_individual: false
+  
+# =========== Export Configuration ===========
+export:
+  # ONNX Export
+  onnx:
+    enabled: true
+    opset_version: 13
+    dynamic_axes:
+      input: {0: "batch", 2: "height", 3: "width"}
+      output: {0: "batch", 2: "height", 3: "width"}
+    export_path: "../frontend/public/models/esrgan-v3.onnx"
+    
+  # TensorRT Export (Optional)
+  tensorrt:
+    enabled: false
+    fp16: true
+    max_workspace_size: 1024
+    export_path: "./exported/trt"
+    
+  # TorchScript Export
+  torchscript:
+    enabled: false
+    export_path: "./exported/torchscript"
+    
+# =========== Project Configuration ===========
+project:
+  name: "VisionUpscale"
+  version: "1.0.0"
+  description: "Edge-Based Image Super-Resolution Enhancer"
+  
+  # Paths
+  data_dir: "./data"
+  output_dir: "./output"
+  logs_dir: "./logs"
+  
+  # Reproducibility
+  seed: 42
+  deterministic: true
+
+# =========== Monitoring Configuration ===========
+monitoring:
+  # Training Progress
+  progress_bar: true
+  update_frequency: 10  # Update every 10 batches
+  
+  # Metrics Tracking
+  track_metrics:
+    - "loss"
+    - "psnr"
+    - "ssim"
+    - "learning_rate"
+    - "epoch_time"
+    
+  # Early Stopping
+  early_stopping:
+    enabled: true
+    patience: 50
+    min_delta: 0.001
+    monitor: "val_psnr"
+    
+  # Learning Rate Scheduling
+  scheduler:
+    name: "cosine_annealing"
+    T_max: 400  # Total epochs
+    eta_min: 1e-6
+    
+# =========== Experimental Configuration ===========
+experimental:
+  # Advanced Loss Functions
+  advanced_losses:
+    perceptual_loss:
+      use_vgg19: true
+      layers: ["relu2_2", "relu3_4", "relu4_4"]
+      
+    adversarial_loss:
+      type: "relativistic"
+      use_least_squares: false
+      
+  # Multi-Scale Training
+  multi_scale_training: false
+  scales: [2, 4, 8]
+  
+  # Progressive Growing (Optional)
+  progressive_growing: false
+  growing_steps: [16, 32, 64, 128, 256]
+  
+# =========== Notes ===========
+# 
+# Training Notes:
+# - Phase 1: Focus on pixel-level accuracy (L1 loss)
+# - Phase 2: Add perceptual quality (GAN training)
+# - Expected PSNR: ~32.45 dB on DIV2K validation
+# - Training time: 48-72 hours on single RTX 3080
+#
+# Hardware Requirements:
+# - Minimum: 8GB GPU RAM, 16GB System RAM
+# - Recommended: 12GB+ GPU RAM, 32GB System RAM
+#
+# Dataset Preparation:
+# - Run scripts/download_div2k.py first
+# - Run scripts/generate_lr_pairs.py for LR/HR pairs
+#
+# To train:
+# python train.py --config config.yaml
+#
+# To evaluate:
+# python evaluate.py --checkpoint ./checkpoints/best_model.pth
+#
+# To export:
+# python export_onnx.py --config config.yaml --checkpoint ./checkpoints/best_model.pth

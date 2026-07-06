@@ -1,0 +1,41 @@
+# ============================================================
+# VisionUpscale - Python ML Requirements
+# ============================================================
+
+# Core Deep Learning
+torch>=2.1.0
+torchvision>=0.16.0
+torchaudio>=2.1.0
+
+# ONNX Export & Runtime
+onnx>=1.15.0
+onnxruntime>=1.16.0
+onnxruntime-gpu>=1.16.0  # Optional: GPU support
+
+# Image Processing
+Pillow>=10.0.0
+opencv-python>=4.8.0
+scikit-image>=0.21.0
+imageio>=2.31.0
+
+# Data & Numerics
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Training Utilities
+tensorboard>=2.14.0
+tqdm>=4.66.0
+pyyaml>=6.0.1
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Model Download & Utilities
+requests>=2.31.0
+gdown>=4.7.3  # Google Drive downloader
+
+# Development & Testing
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0

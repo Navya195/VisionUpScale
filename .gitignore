@@ -1,0 +1,73 @@
+# ============================================================
+# VisionUpscale .gitignore
+# ============================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+.Python
+env/
+venv/
+.venv/
+ENV/
+.env
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# ML / Model Artifacts
+model/checkpoints/
+model/runs/
+model/logs/
+model/outputs/
+*.pth
+*.pt
+*.onnx
+*.pkl
+*.h5
+model/data/
+
+# Training Data (large)
+data/
+datasets/
+*.zip
+*.tar
+*.tar.gz
+
+# TensorBoard
+runs/
+lightning_logs/
+
+# Node.js / Web
+web/node_modules/
+web/dist/
+web/.vite/
+web/.env
+web/.env.local
+web/.env.production
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Misc
+*.tmp
+*.bak
+.cache/

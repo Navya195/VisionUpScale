@@ -1,0 +1,21 @@
+[build]
+  base = "web"
+  command = "npm run build"
+  publish = "dist"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Required for ONNX Runtime Web WASM shared memory
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "require-corp"
+
+[[headers]]
+  for = "*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
