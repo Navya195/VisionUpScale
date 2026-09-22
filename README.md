@@ -23,7 +23,8 @@ The project features a **React + Vite** web application that runs the AI model *
 
 
 
-![Uploading image.png…]()
+<img width="1908" height="867" alt="image" src="https://github.com/user-attachments/assets/775e5a25-8f3c-45fd-b66d-7f0680395e75" />
+
 
 
 ---
