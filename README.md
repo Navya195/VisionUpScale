@@ -1,10 +1,15 @@
 # VisionUpscale: Edge-Based Image Super-Resolution Enhancer
 
-![VisionUpscale Logo](web/public/favicon.svg)
+<img width="1898" height="925" alt="image" src="https://github.com/user-attachments/assets/b772d6ae-4f04-4d18-85a0-4fcb39a1cee9" />
+
 
 **VisionUpscale** is a complete, production-ready AI & Machine Learning project that implements an end-to-end image super-resolution system. It uses **ESRGAN** (Enhanced Super-Resolution Generative Adversarial Networks) to upscale low-resolution images by 4×. 
 
 The project features a **React + Vite** web application that runs the AI model *entirely in the browser* using **ONNX Runtime Web** and WebAssembly. This means **zero server uploads, zero latency, and 100% privacy**.
+
+
+<img width="1902" height="900" alt="image" src="https://github.com/user-attachments/assets/2203d870-a0e8-4e1c-b8d3-29000b58cdc6" />
+
 
 ---
 
@@ -15,6 +20,11 @@ The project features a **React + Vite** web application that runs the AI model *
 - **100% Private:** Images never leave your device. No cloud servers required for inference.
 - **Interactive UI:** Drag-and-drop upload, before/after comparison slider, and one-click high-quality PNG download.
 - **Complete ML Pipeline:** Full PyTorch training code, dataset preparation scripts (DIV2K), evaluation metrics (PSNR, SSIM), and ONNX export utilities.
+
+
+
+![Uploading image.png…]()
+
 
 ---
 
