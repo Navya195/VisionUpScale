@@ -11,12 +11,12 @@ import { useAuth } from '../hooks/useAuth';
 import { 
   BarChart3, ImageIcon, Zap, Clock, RotateCw, 
   Settings, HelpCircle, LogOut, Menu, X,
-  TrendingUp, Users, Database, Activity
+  TrendingUp, Users, Database, Activity, User
 } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [stats, setStats] = useState({
     totalImages: 1,
@@ -121,7 +121,18 @@ export default function Dashboard() {
               className="search-input"
             />
             <div className="user-menu">
-              <img src="/api/placeholder/32/32" alt="User" className="user-avatar" />
+              <motion.button 
+                className="user-profile-btn"
+                onClick={() => navigate('/profile')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title="Go to Profile"
+              >
+                <div className="user-avatar-circle">
+                  {user?.displayName ? user.displayName.charAt(0).toUpperCase() : <User size={18} />}
+                </div>
+                <span className="user-name-text">{user?.displayName || 'User'}</span>
+              </motion.button>
             </div>
           </div>
         </div>
